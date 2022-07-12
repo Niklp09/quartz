@@ -1,8 +1,4 @@
-local settings = Settings(minetest.get_modpath("quartz").."/settings.txt")
-
--- internationalization boilerplate
-local MP = minetest.get_modpath(minetest.get_current_modname())
-local S, NS = dofile(MP.."/intllib.lua")
+local S = minetest.get_translator("quartz")
 
 --
 --  Item Registration
@@ -69,22 +65,6 @@ minetest.register_node("quartz:pillar", {
 	on_place = minetest.rotate_node
 })
 
--- Stairs & Slabs
-stairs.register_stair_and_slab("quartzblock", "quartz:block",
-		{cracky=3, oddly_breakable_by_hand=1},
-		{"quartz_block.png"},
-		S("Quartz stair"),
-		S("Quartz slab"),
-		default.node_sound_glass_defaults())
-
-stairs.register_stair_and_slab("quartzstair", "quartz:pillar",
-		{cracky=3, oddly_breakable_by_hand=1},
-		{"quartz_pillar_top.png", "quartz_pillar_top.png",
-			"quartz_pillar_side.png"},
-		S("Quartz Pillar stair"),
-		S("Quartz Pillar slab"),
-		default.node_sound_glass_defaults())
-
 --
 -- Crafting
 --
@@ -128,24 +108,6 @@ minetest.register_craft({
 })
 
 --
--- ABMS
---
-
-local dirs2 = {12, 9, 18, 7, 12}
-
--- Replace all instances of the horizontal quartz pillar with the
-minetest.register_abm({
-	nodenames = {"quartz:pillar_horizontal"},
-	interval = 1,
-	chance = 1,
-	action = function(pos, node, active_object_count, active_object_count_wider)
-		local fdir = node.param2 or 0
-			nfdir = dirs2[fdir+1]
-		minetest.add_node(pos, {name = "quartz:pillar", param2 = nfdir})
-	end,
-})
-
---
 -- Compatibility with stairsplus
 --
 
@@ -168,27 +130,7 @@ if minetest.global_exists("stairsplus") then
 		description = "Quartz Pillar",
 		tiles  = {"quartz_pillar_top.png", "quartz_pillar_top.png",
 			"quartz_pillar_side.png"},
-		groups = {cracky=3, oddly_breakable_by_hand=1},
+			groups = {cracky=3, oddly_breakable_by_hand=1},
 		sounds = default.node_sound_glass_defaults()
-	})
-end
-
---
--- Deprecated
---
-
-if settings:get_bool("ENABLE_HORIZONTAL_PILLAR") then
-	-- Quartz Pillar (horizontal)
-	minetest.register_node("quartz:pillar_horizontal", {
-			description = "Quartz Pillar Horizontal",
-			tiles = {"quartz_pillar_side.png", "quartz_pillar_side.png",
-				"quartz_pillar_side.png^[transformR90",
-				"quartz_pillar_side.png^[transformR90", "quartz_pillar_top.png",
-				"quartz_pillar_top.png"},
-			paramtype2 = "facedir",
-			drop = 'quartz:pillar',
-			groups = {cracky=3, oddly_breakable_by_hand=1,
-				not_in_creative_inventory=1},
-			sounds = default.node_sound_glass_defaults(),
 	})
 end
